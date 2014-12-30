@@ -80,7 +80,6 @@ Canvas=function(name, height, width){
         if(noClear!==true){
             this.clearScreen();
         }
-        var temp=[];
         for(var i=-50; i<50; i++){
             for(var j=0; j<this.toRender.length; j++){
                 if(this.toRender[j].d===i){
