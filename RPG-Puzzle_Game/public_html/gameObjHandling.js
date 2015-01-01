@@ -100,7 +100,7 @@ game.GUI=function(){
     this.pointCollision=function(point){
         var boolTemp = true;
         for(var i in this.colTri){
-            for(var j=0;j<3;j++){
+            for(var j = 0; j < 3; j++){
                 if(this.colTri[i][j].x === this.colTri[i][(j+1)%3].x){
                     if(this.colTri[i][j].x > this.colTri[i][(j+2)%3].x)
                         boolTemp = boolTemp && (point.x >= this.colTri[i][j].x);
