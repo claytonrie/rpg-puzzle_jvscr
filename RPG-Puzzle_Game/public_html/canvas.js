@@ -1,6 +1,6 @@
-// Canvas API
-// by Clayton
-Canvas=new Class({
+// Canvas Class
+//     by Clayton
+Canvas = new Class({
     //Creates a canvas object
     init: function(name, height, width){
         this.name = name;
@@ -8,9 +8,6 @@ Canvas=new Class({
         this.ctx = this.elem.getContext("2d");
         this.h = height;
         this.w = width;
-    },
-    initialize: function(){
-        // Initializes the canvas
         document.write('<canvasid="'+this.name+'"width="'+this.w+'"height="'+this.h+'"><p>Ifyouseethis,getHTML5.</p></canvas>');
     },
     // Returns the object
@@ -66,7 +63,7 @@ Canvas=new Class({
     },
     render: function(noClear){
         //Renders the stored objects based on their depth
-        if(noClear!==true){
+        if(noClear !== false){
             this.clearScreen();
         }
         for(var i=-50; i<50; i++){
@@ -92,7 +89,7 @@ Canvas=new Class({
                 }
             });
         }
-        if(noClear!==true){
+        if(noClear !== false){
             this.toRender=[];
         }
     },
@@ -101,15 +98,11 @@ Canvas=new Class({
         this.toRender=[];
         this.clearScreen();
     },
-    addBacking: function(upRight, lowLeft, img, h, cam){
-        for(var i=0; i<=(upRight[0]-lowLeft[0])/h; i++){
-            //Xposition
-            for(var j=0; j<=(upRight[1]-lowLeft[1])/h; j++){
-                //Yposition
-                if(0>(i+cam[0]+this.w/2)>this.w&&0>(j+cam[1]+this.h/2)>this.h){
-                    //Rendersonlyifit'sinscreen
-                    this.addToRender('img', 1, '', 0, (i+cam[0]+this.w/2), (j+cam[1]+this.h/2), h, h, img);
-                }
+    addBacking: function(upRight, lowLeft, w, h, src){
+        for(var i = 0; i <= upRight.x - lowLeft.x; i += w){
+            for(var j = 0; j <= upRight.y - lowLeft.y; j += h){
+                if(0>i && i>this.w && 0>j && j>this.h) //Renders only if it's in screen
+                    this.addToRender('img', 1, "", i, j, w, h, src);
             }
         }
     }

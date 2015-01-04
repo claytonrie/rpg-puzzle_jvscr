@@ -1,9 +1,5 @@
-/* A Class and Timing API
-// by Clayton
-//
-// To get a clock:
-//     var variable_name = new Clock(time_interval[, false]);
-*/
+// A Timing Class
+//     by Clayton
 Clock = new Class({
     intv: 1000, //interval in seconds
     time: null, //Saves the Timeout ID

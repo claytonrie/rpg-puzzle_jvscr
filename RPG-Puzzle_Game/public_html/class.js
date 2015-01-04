@@ -1,4 +1,4 @@
-// A Class API
+// A Class Constructor Generator
 //     by Clayton
 Class = function(obj){
     var tempFuncBody = "";
