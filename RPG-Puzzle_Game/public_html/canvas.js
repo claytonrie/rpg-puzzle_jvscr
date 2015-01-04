@@ -1,22 +1,29 @@
 // Canvas API
 // by Clayton
-Canvas=function(name, height, width){
+Canvas=new Class({
     //Creates a canvas object
-    this.init=function(){
+    init: function(name, height, width){
+        this.name = name;
+        this.elem = document.getElementById(name);
+        this.ctx = this.elem.getContext("2d");
+        this.h = height;
+        this.w = width;
+    },
+    initialize: function(){
         // Initializes the canvas
         document.write('<canvasid="'+this.name+'"width="'+this.w+'"height="'+this.h+'"><p>Ifyouseethis,getHTML5.</p></canvas>');
-    };
+    },
     // Returns the object
-    this.name=name;
-    this.elem=document.getElementById(name);
-    this.ctx=this.elem.getContext("2d"); //Gets"context"
-    this.h=height;
-    this.w=width;
-    this.clearScreen=function(){
+    name: null,
+    elem: null,
+    ctx: null, //Gets"context"
+    h: null,
+    w: null,
+    clearScreen: function(){
         //Rectanglewithupper-leftcornerat(x, y)
         this.ctx.clearRect(-10, -10, this.w+20, this.h+20);
-    };
-    this.drawRect=function(x, y, w, h, unfilled){
+    },
+    drawRect: function(x, y, w, h, unfilled){
         //Rectanglewithupper-leftcornerat(x, y)and
         //heighthandwidthw
         if((typeofunfilled===undefined)?false:unfilled){
@@ -27,12 +34,12 @@ Canvas=function(name, height, width){
         else{
             this.ctx.fillRect(x, y, w, h);
         }
-    };
-    this.drawPoint=function(x, y){
+    },
+    drawPoint: function(x, y){
         //Drawsapointat(x, y)
         this.ctx.fillRect(x-1, y-1, 2, 2);
-    };
-    this.drawImg=function(x, y, w, h, source){
+    },
+    drawImg: function(x, y, w, h, source){
         //Drawsanimageat(x, y)withheighthandwidthw
         var temp=newImage();
         temp.src=source;
@@ -40,86 +47,61 @@ Canvas=function(name, height, width){
         temp.onload=function(){
             cont.drawImage(temp, x, y, w, h);
         };
-    };
-    this.toRender=[], //Arrayofobjectstorender
-    this.addToRender=function(t, layer, color, x, y, w, h, source){
+    },
+    toRender: [], //Arrayofobjectstorender
+    addToRender: function(t, layer, color, x, y, w, h, source){
         //Addsanobjecttothearray
-        var temp=[(typeofx===undefined)?0:x];
-        temp.push((typeofy===undefined)?0:y);
-        temp.push((typeofh===undefined)?w:h);
-        temp.push((typeofsource===undefined)?'':source);
-        if(typeofh===undefined){
-            this.toRender.push({
-                type:t,
-                x:(temp[0]-(temp[2]/2)),
-                y:(temp[1]-(temp[2]/2)),
-                w:temp[2],
-                h:temp[2],
-                clr:color,
-                src:temp[3],
-                d:layer
-            }
-            );
+        var temp={x: (typeof x === undefined)?0:x};
+        temp.y = (typeof y === undefined)?0:y;
+        temp.h = (typeof h === undefined)?w:h;
+        temp.src = (typeof source === undefined)?'':source;
+        this.toRender.push({
+            type: t, x: temp.x, y: temp.y,
+            h: temp.h, w: w, clr: color,
+            src: temp.src,d: layer});
+        if(typeof h ===undefined){
+            this.toRender[this.toRender.length - 1].x -= temp.h/2;
+            this.toRender[this.toRender.length - 1].y -= temp.h/2;
         }
-        else{
-            this.toRender.push({
-                type:t,
-                x:temp[0],
-                y:temp[1],
-                h:temp[2],
-                w:w,
-                clr:color,
-                src:temp[3],
-                d:layer
-            }
-            );
-        }
-    };
-    this.render=function(noClear){
-        //Rendersthestoredobjectsbasedontheirdepth
+    },
+    render: function(noClear){
+        //Renders the stored objects based on their depth
         if(noClear!==true){
             this.clearScreen();
         }
         for(var i=-50; i<50; i++){
-            for(var j=0; j<this.toRender.length; j++){
-                if(this.toRender[j].d===i){
-                    if(this.toRender[j].type==='back'){
-                        //Displayabackgroundcolor
-                        this.ctx.fillStyle=this.toRender[j].clr;
-                        this.drawRect(-10, -10, this.w+20, this.h+20, false);
-                    }
-                    if(this.toRender[j].type==='rect'){
-                        //Drawsarectangle
-                        this.ctx.fillStyle=this.toRender[j].clr;
-                        this.drawRect(this.toRender[j].x,
-                        this.toRender[j].y,
-                        this.toRender[j].w,
-                        this.toRender[j].h, false);
-                    }
-                    if(this.toRender[j].type==='pt'){
-                        //Drawsapoint
-                        this.ctx.fillStyle=this.toRender[j].clr;
-                        this.drawRect(this.toRender[j].x-1,
-                        this.toRender[j].y-1,
-                        2, 2, false);
-                    }
-                    if(this.toRender[j].type==='img'){
-                        //Drawanimage
-                        this.drawImg(this.toRender[j].x, this.toRender[j].y, this.toRender[j].w, this.toRender[j].h, this.toRender[j].src);
+            this.toRender.forEach(function(val,j){ // V is the value, j is the index
+                if(Math.round(val.d)===i){
+                    switch(val.type){
+                        case 'back': //Display a background color
+                            this.ctx.fillStyle = val.clr;
+                            this.drawRect(-10, -10, this.w + 20, this.h + 20, false);
+                            break;
+                        case 'rect': //Draws a rectangle
+                            this.ctx.fillStyle=val.clr;
+                            this.drawRect(val.x, val.y, val.w, val.h, false);
+                            break;
+                        case 'pt': //Draws a point
+                            this.ctx.fillStyle=val.clr;
+                            this.drawRect(val.x - 1, val.y - 1, 2, 2, false);
+                            break;
+                        case 'img': //Draw an image
+                            this.drawImg(val.x, val.y, val.w, val.h, val.src);
+                            break;
                     }
                 }
-            }
+            });
         }
         if(noClear!==true){
             this.toRender=[];
         }
-    };
-    this.clearRender=function(){
+    },
+    clearRender: function(){
         //clearthearrayforanupdate
         this.toRender=[];
         this.clearScreen();
-    };
-    this.addBacking=function(upRight, lowLeft, img, h, cam){
+    },
+    addBacking: function(upRight, lowLeft, img, h, cam){
         for(var i=0; i<=(upRight[0]-lowLeft[0])/h; i++){
             //Xposition
             for(var j=0; j<=(upRight[1]-lowLeft[1])/h; j++){
@@ -130,6 +112,5 @@ Canvas=function(name, height, width){
                 }
             }
         }
-    };
-    this.init();
-};
+    }
+});
