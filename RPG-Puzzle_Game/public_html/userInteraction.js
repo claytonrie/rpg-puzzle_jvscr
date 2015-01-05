@@ -1,32 +1,48 @@
 detect = {
     events: [],
-    keyPress: function (func,noStart){
-        this.func=func;
-        this.begin = function(){
+    keyPress: new Class({
+        init: function (func,noStart){
+            Object.defineProperty(this, "func", {
+                get: function() { return detect.events[this.loc]; },
+                set: function(x) { detect.events[this.loc] = x; },
+            });
+            this.func = func;
+            if((typeof noStart === undefined)? (true) : (!noStart))
+                this.begin();
+        }, func: new Function(),
+        loc: detect.events.length,
+        begin: function(){
             document.onkeypress = function (event){
-                var temp=false;
+                var temp = false;
                 if (event.which !== 0 && event.charCode !== 0){
-                    temp= String.fromCharCode(event.which);
+                    temp = String.fromCharCode(event.which);
                     // the rest
-               }
-                if (!temp) return;
+                }
+                if(!temp) return;
                 this.func(temp);
             }
         }
-        if((typeof noStart === undefined)?(true):(!noStart)) this.begin();
-    },
-    clickOn: function (func,noStart){
-        this.func=func;
-        this.begin = function(){
+    }),
+    clickOn: new Class({
+        init: function (func,noStart){
+            Object.defineProperty(this, "func", {
+                get: function() { return detect.events[this.loc]; },
+                set: function(x) { detect.events[this.loc] = x; },
+            });
+            this.func = func;
+            if((typeof noStart === undefined)? (true) : (!noStart))
+                this.begin();
+        }, func: new Function(),
+        loc: detect.events.length,
+        begin: function(){
             document.onkeypress = function (event){
-                var temp=false;/*
+                var temp = false;/*
                 if (event.which !== 0 && event.charCode !== 0){
                     temp= String.fromCharCode(event.which);
                 }*/
-                if (!temp) return;
+                if(!temp) return;
                 this.func(temp);
             }
         }
-        if((typeof noStart === undefined)?(true):(!noStart)) this.begin();
-    }
-}
+    })
+};
