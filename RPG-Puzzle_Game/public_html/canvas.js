@@ -3,19 +3,17 @@
 Canvas = new Class({
     //Creates a canvas object
     init: function(name, height, width){
+        // Returns the object
         this.name = name;
         this.elem = document.getElementById(name);
+        //Gets "context"
         this.ctx = this.elem.getContext("2d");
         this.h = height;
         this.w = width;
-        document.write('<canvasid="'+this.name+'"width="'+this.w+'"height="'+this.h+'"><p>Ifyouseethis,getHTML5.</p></canvas>');
+        document.write('<canvasid="'+this.name+'"width="'+this.w+'"height="'+this.h+
+                       '"><p>Ifyouseethis,getHTML5.</p></canvas>');
     },
-    // Returns the object
-    name: null,
-    elem: null,
-    ctx: null, //Gets"context"
-    h: null,
-    w: null,
+    name: null, elem: null, ctx: null, h: null, w: null,
     clearScreen: function(){
         //Rectanglewithupper-leftcornerat(x, y)
         this.ctx.clearRect(-10, -10, this.w+20, this.h+20);
@@ -72,19 +70,15 @@ Canvas = new Class({
                     switch(val.type){
                         case 'back': //Display a background color
                             this.ctx.fillStyle = val.clr;
-                            this.drawRect(-10, -10, this.w + 20, this.h + 20, false);
-                            break;
+                            return this.drawRect(-10, -10, this.w + 20, this.h + 20, false);
                         case 'rect': //Draws a rectangle
                             this.ctx.fillStyle=val.clr;
-                            this.drawRect(val.x, val.y, val.w, val.h, false);
-                            break;
+                            return this.drawRect(val.x, val.y, val.w, val.h, false);
                         case 'pt': //Draws a point
                             this.ctx.fillStyle=val.clr;
-                            this.drawRect(val.x - 1, val.y - 1, 2, 2, false);
-                            break;
+                            return this.drawRect(val.x - 1, val.y - 1, 2, 2, false);
                         case 'img': //Draw an image
                             this.drawImg(val.x, val.y, val.w, val.h, val.src);
-                            break;
                     }
                 }
             });
@@ -98,10 +92,11 @@ Canvas = new Class({
         this.toRender=[];
         this.clearScreen();
     },
-    addBacking: function(upRight, lowLeft, w, h, src){
+    addBacking: function(upRight, lowLeft, src, w, h){
+        if(typeof h === undefined) h = w;
         for(var i = 0; i <= upRight.x - lowLeft.x; i += w){
             for(var j = 0; j <= upRight.y - lowLeft.y; j += h){
-                if(0>i && i>this.w && 0>j && j>this.h) //Renders only if it's in screen
+                if((-w)>i && i>this.w && (-h)>j && j>this.h) //Renders only if it's in screen
                     this.addToRender('img', 1, "", i, j, w, h, src);
             }
         }
