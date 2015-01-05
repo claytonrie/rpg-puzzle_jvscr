@@ -24,7 +24,7 @@ game = {
     // i.e. Start-up menu, pause menu, and different rooms
     sectSet: [function(){}],
     // An array of all objects in the game
-    allObj: {},
+    indexStore: {},
     // Runs all the objects "mind" functions  if they have one
     calculateMind: function(){
         for (var i = 0; i < game.allObj.length; i++) {
@@ -38,16 +38,11 @@ game = {
         }
     }
 };
-game.index=function(){
-    this._ = {};
-    this.uuidCharList = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-               'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 
-               'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 
-               'x', 'c', 'v', 'b', 'n', 'm', 
-               'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 
-               'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 
-               'X', 'C', 'V', 'B', 'N', 'M']; // All the characters that can be in a UUID
-    this.makeUUID = function (l, charList, setNum) {
+game.index = new Class({
+    loc: game.indexStore.length,
+    _: {},
+    uuidCharList: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], // All the characters that can be in a UUID
+    makeUUID: function (l, charList, setNum) {
         // Randomly generates UUIDs
         var temp = '';
         for (var i = 0; i < l; i++) {
@@ -56,12 +51,30 @@ game.index=function(){
                 temp += '-';
             }
         }
-    };
-    this.typeCount = {"pl":0};
-    this.makeTNID = function(t){
+    },
+    typeCount: {"pl":0},
+    makeTNID: function(t){
         if(typeof this.typeCount[t] === undefined)
             this.typeCount[t] = 0;
         this.typeCount[t]++;
         return t + '#' + (this.typeCount[t] - 1);
-    };
-};
+    },
+    init: function(){
+        game.indexStore.push({});
+        this.uuidCharList.push('q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o',
+                               'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k',
+                               'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm'); 
+        this.uuidCharList.push('Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O',
+                               'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 
+                               'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M');
+        Object.defineProperty(this, "_", {
+            get: function(){
+                return game.indexStore[this.loc]; 
+            }
+        });Object.defineProperty(this, "_", {
+            set: function(x){
+                game.indexStore[this.loc] = x; 
+            }
+        });
+    }
+});
