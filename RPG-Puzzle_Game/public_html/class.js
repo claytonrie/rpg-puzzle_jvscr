@@ -38,8 +38,7 @@ Class = function(obj){
     var tempFuncBody = "";
     var args = [];
     for(var i in obj){
-        tempFuncBody+='this["'+i+'"] = ';
-        tempFuncBody+=toSource(obj[i])+'; ';
+        tempFuncBody+='this["'+i+'"] = '+toSource(obj[i])+'; ';
         if(i === "init"){
             for(var j = 0; j < obj[i].length; j++ ) args.push("_"+j);
             tempFuncBody+='this["init"]('+args+'); ';
