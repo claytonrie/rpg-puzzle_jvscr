@@ -22,7 +22,7 @@ game = {
     },
     // An array of functions that set up different "rooms"
     // i.e. Start-up menu, pause menu, and different rooms
-    sectSet: [function(){}],
+    setList: [],
     // An array of all objects in the game
     indexStore: {},
     // Runs all the objects "mind" functions  if they have one
@@ -38,6 +38,46 @@ game = {
         }
     }
 };
+game.set = new Class({
+    loc: game.sectSet.length,
+    _: {},
+    backing: [],
+    obj: [],
+    GUI: [],
+    init: function(){
+        Object.defineProperty(this, "_", {
+            get: function(){
+                return game.setList[this.loc]; 
+            },set: function(x){
+                game.setList[this.loc] = x; 
+            }
+        });
+        this._["backing"] = [];
+        this._["object"] = [];
+        this._["GUI"] = [];
+        Object.defineProperty(this, "backing", {
+            get: function(){
+                return game.setList[this.loc]["backing"]; 
+            },set: function(x){
+                game.setList[this.loc]["backing"] = x; 
+            }
+        });
+        Object.defineProperty(this, "obj", {
+            get: function(){
+                return game.setList[this.loc]["object"]; 
+            },set: function(x){
+                game.setList[this.loc]["object"] = x; 
+            }
+        });
+        Object.defineProperty(this, "GUI", {
+            get: function(){
+                return game.setList[this.loc]["GUI"]; 
+            },set: function(x){
+                game.setList[this.loc]["GUI"] = x; 
+            }
+        });
+    }
+});
 game.index = new Class({
     loc: game.indexStore.length,
     _: {},

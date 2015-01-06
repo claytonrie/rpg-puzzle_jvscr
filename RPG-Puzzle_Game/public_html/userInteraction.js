@@ -4,7 +4,7 @@ detect = {
         init: function (func,noStart){
             Object.defineProperty(this, "func", {
                 get: function() { return detect.events[this.loc]; },
-                set: function(x) { detect.events[this.loc] = x; },
+                set: function(x) { detect.events[this.loc] = x; }
             });
             this.func = func;
             if((typeof noStart === undefined)? (true) : (!noStart))
@@ -12,7 +12,7 @@ detect = {
         }, func: new Function(),
         loc: detect.events.length,
         begin: function(){
-            document.onkeypress = function (event){
+            document.onkeypress = function(event){
                 var temp = false;
                 if (event.which !== 0 && event.charCode !== 0){
                     temp = String.fromCharCode(event.which);
@@ -20,14 +20,14 @@ detect = {
                 }
                 if(!temp) return;
                 this.func(temp);
-            }
+            };
         }
     }),
     clickOn: new Class({
         init: function (func,noStart){
             Object.defineProperty(this, "func", {
                 get: function() { return detect.events[this.loc]; },
-                set: function(x) { detect.events[this.loc] = x; },
+                set: function(x) { detect.events[this.loc] = x; }
             });
             this.func = func;
             if((typeof noStart === undefined)? (true) : (!noStart))
@@ -42,7 +42,7 @@ detect = {
                 }*/
                 if(!temp) return;
                 this.func(temp);
-            }
+            };
         }
     })
 };
