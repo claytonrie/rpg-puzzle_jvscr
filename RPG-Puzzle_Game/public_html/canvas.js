@@ -8,10 +8,25 @@ Canvas = new Class({
         this.elem = document.getElementById(name);
         //Gets "context"
         this.ctx = this.elem.getContext("2d");
-        this.h = height;
-        this.w = width;
+        Object.defineProperty(this, "h", {
+            value: height,
+            get: function(){
+                return this.h.value;
+            },set: function(x){
+                this.h.value = x; 
+                this.elem.height = x;
+            }
+        }); Object.defineProperty(this, "w", {
+            value: width,
+            get: function(){
+                return this.w.value;
+            },set: function(x){
+                this.w.value = x; 
+                this.elem.width = x;
+            }
+        });
         document.write('<canvasid="'+this.name+'"width="'+this.w+'"height="'+this.h+
-                       '"><p>Ifyouseethis,getHTML5.</p></canvas>');
+                       '"><p>If you see this, get HTML5.</p></canvas>');
     },
     name: null, elem: null, ctx: null, h: null, w: null,
     clearScreen: function(){
@@ -19,8 +34,7 @@ Canvas = new Class({
         this.ctx.clearRect(-10, -10, this.w+20, this.h+20);
     },
     drawRect: function(x, y, w, h, unfilled){
-        //Rectanglewithupper-leftcornerat(x, y)and
-        //heighthandwidthw
+        // Rectangle with upper-left corner at (x, y) and height h and width w
         if((typeofunfilled===undefined)?false:unfilled){
             this.ctx.beginPath();
             this.ctx.rect(x, y, w, h);
@@ -31,41 +45,42 @@ Canvas = new Class({
         }
     },
     drawPoint: function(x, y){
-        //Drawsapointat(x, y)
+        //Draws a point at (x, y)
         this.ctx.fillRect(x-1, y-1, 2, 2);
     },
     drawImg: function(x, y, w, h, source){
-        //Drawsanimageat(x, y)withheighthandwidthw
-        var temp=newImage();
-        temp.src=source;
-        var cont=this.ctx;
-        temp.onload=function(){
+        // Draws an image at (x, y) with height h and width w
+        var temp = newImage();
+        temp.src = source;
+        var cont = this.ctx;
+        temp.onload = function(){
             cont.drawImage(temp, x, y, w, h);
         };
     },
-    toRender: [], //Arrayofobjectstorender
-    addToRender: function(t, layer, color, x, y, w, h, source){
-        //Addsanobjecttothearray
-        var temp={x: (typeof x === undefined)?0:x};
-        temp.y = (typeof y === undefined)?0:y;
-        temp.h = (typeof h === undefined)?w:h;
-        temp.src = (typeof source === undefined)?'':source;
-        this.toRender.push({
-            type: t, x: temp.x, y: temp.y,
-            h: temp.h, w: w, clr: color,
-            src: temp.src,d: layer});
-        if(typeof h ===undefined){
-            this.toRender[this.toRender.length - 1].x -= temp.h/2;
-            this.toRender[this.toRender.length - 1].y -= temp.h/2;
-        }
-    },
     render: function(noClear){
-        //Renders the stored objects based on their depth
-        if(noClear !== false){
+        this.value = (this.value = this.value) || ([]);
+        this.add = function(t, layer, color, x, y, w, h, source){
+            // Adds an object to the array
+            var temp = {
+                x: (x = x) || 0, y: (y = y) || 0,
+                h: (h = h) || w, src: (source = source) || ""
+            };
+            this.render.value.push({
+                type: t, x: temp.x, y: temp.y,
+                h: temp.h, w: w, clr: color,
+                src: temp.src, d: layer});
+            if(typeof h ===undefined){
+                this.render.value[this.render.value.length - 1].x -= temp.h/2;
+                this.render.value[this.render.value.length - 1].y -= temp.h/2;
+            }
+        };
+        // Renders the stored objects based on their depth
+        if(this.value.length === 0)
+            return;
+        if(noClear === false)
             this.clearScreen();
-        }
         for(var i=-50; i<50; i++){
-            this.toRender.forEach(function(val,j){ // V is the value, j is the index
+            this.render.value.forEach(function(val){ // V is the value of each piece
                 if(Math.round(val.d)===i){
                     switch(val.type){
                         case 'back': //Display a background color
@@ -83,22 +98,19 @@ Canvas = new Class({
                 }
             });
         }
-        if(noClear !== false){
-            this.toRender=[];
-        }
+        if(noClear === false)
+            this.render.value = [];
     },
     clearRender: function(){
-        //clearthearrayforanupdate
-        this.toRender=[];
+        // Clears the array for an update
+        this.render.value=[];
         this.clearScreen();
     },
     addBacking: function(upRight, lowLeft, src, w, h){
-        if(typeof h === undefined) h = w;
-        for(var i = 0; i <= upRight.x - lowLeft.x; i += w){
-            for(var j = 0; j <= upRight.y - lowLeft.y; j += h){
+        h = (h = h) || w; // h optionality
+        for(var i = 0; i <= upRight.x - lowLeft.x; i += w)
+            for(var j = 0; j <= upRight.y - lowLeft.y; j += h)
                 if((-w)>i && i>this.w && (-h)>j && j>this.h) //Renders only if it's in screen
-                    this.addToRender('img', 1, "", i, j, w, h, src);
-            }
-        }
+                    this.render.add('img', 1, "", i, j, w, h, src);
     }
 });
