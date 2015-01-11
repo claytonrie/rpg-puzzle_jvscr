@@ -1,30 +1,25 @@
 // A Timing Class
 //     by Clayton
 Clock = new Class({
-    intv: 1000, //interval in seconds
+    intv: 00, //interval in seconds
     time: null, //Saves the Timeout ID
     count: 0,
-    resetCount: function(){
-        this.count = 0;
-    },
-    setTiming: function(num){
+    setTiming: function(num) {
         //Sets the Interval
         this.intv = num * 1000;
     },
-    beginClock: function(func){
+    beginClock: function(func) {
         //Begins the clock
-        this.time = setInterval(function(){
-            func();
-            this.count++;
+        return this.time = setInterval(function() {
+            return func(this.count++, this.intv);
         }, this.intv);
     },
-    stopClock: function(){
+    stopClock: function() {
         //Stops the clock
         clearInterval(this.time);
     },
-    init: function(interval,func){
-        if(typeof func !== undefined)
-            this.beginClock(func);
-        this.intv *= interval;
+    init: function(interval, func) {
+        this.intv = 1000 * interval;
+        return func && this.beginClock(func);
     }
 });

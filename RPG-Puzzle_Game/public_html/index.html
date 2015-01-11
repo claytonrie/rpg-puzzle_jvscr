@@ -4,11 +4,58 @@
         <title>RPG Puzzle</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="class.js" type="text/javascript"></script>
         <script src="clock.js" type="text/javascript"></script>
         <script src="canvas.js" type="text/javascript"></script>
         <script src="game.js" type="text/javascript"></script>
+        <script src="gameIndex.js" type="text/javascript"></script>
         <script src="gameObjHandling.js" type="text/javascript"></script>
+        <script src="gameGUI.js" type="text/javascript"></script>
+        <script>
+            var px_m, gObj;
+            window.onload = function(){
+                px_m = 8; gObj = new game.index();
+                game.cv = new Canvas('cv', 480, 960);
+                gObj.setBy("uuid", new game.obj("pl", null, "\Grass1.png", 
+                                                game.cv, true, 0, -100, 32, 32, 3));
+                gObj.setBy("uuid", new game.obj("en", null, "\Grass1.png", 
+                                                game.cv, true, 0, 100, 32, 32, 3));
+                gObj.handleByTNID("pl#0", function(o){
+                    o.stats["yv"] = 10 * px_m;
+                    o.stats["xv"] = 10 * px_m;
+                    return o;
+                }); gObj.handleByTNID("en#0", function(o){
+                    o.stats["yv"] = 0 * px_m;
+                    o.stats["xv"] = 0 * px_m;
+                    return o;
+                });
+                var timer = new Clock(0.05, function(){
+                    game.cv.add("back", -5, "#000");
+                    for(var i in gObj._)
+                        if(gObj._.hasOwnProperty(i))
+                            gObj._[i].renderObj();
+                    game.cv.render(false);
+                    gObj.calculateMind();
+                    gObj.handleByTNID("pl#0",function(o){
+                        o.stats["yv"] = o.stats["yv"] - (0.4905 * px_m);
+                        if(o.y >= (o.cv.h / 2))
+                            o.stats["yv"] = -o.stats["yv"];
+                        o.y -= (o.stats["yv"] / 20);
+                        o.x += (o.stats["xv"] / 20);
+                        return o;
+                    }); gObj.handleByTNID("en#0",function(o){
+                        o.stats["yv"] = o.stats["yv"] - (0.4905 * px_m);
+                        if(o.y >= (o.cv.h / 2))
+                            o.stats["yv"] = -o.stats["yv"];
+                        o.y -= (o.stats["yv"] / 20);
+                        o.x += (o.stats["xv"] / 20);
+                        return o;
+                    })
+                });
+            };
+        </script>
     </head>
     <body>
+        <div id="print"></div>
     </body>
 </html>
